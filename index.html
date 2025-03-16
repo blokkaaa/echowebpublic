@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Echo Solutions - Premium FiveM Software</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Loading screen styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-logo {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 15px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .loading-logo span {
+            display: inline-block;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+        
+        .loading-logo span.active {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                         0 0 20px rgba(255, 255, 255, 0.6),
+                         0 0 30px rgba(255, 255, 255, 0.4);
+        }
+        
+        .loading-bar-container {
+            width: 200px;
+            height: 4px;
+            background-color: #333;
+            margin: 0 auto;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            width: 0;
+            background-color: #ffffff;
+            transition: width 0.5s ease;
+        }
+        
+        .loading-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <span>E</span>
+                <span>C</span>
+                <span>H</span>
+                <span>O</span>
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="particles-js"></div>
+    
+    <!-- Header with logo and navigation -->
+    <header class="header">
+        <div class="logo-container">
+            <a href="#">
+                <img src="logo.png" alt="Echo Solutions Logo" class="logo">
+            </a>
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="nav-link home">Home</a>
+            <a href="dashboard.html" class="nav-link dashboard">Dashboard</a>
+            <a href="https://discord.gg/ccEcPTJJ" target="_blank" class="nav-link discord">Discord</a>
+        </nav>
+    </header>
+    
+    <div class="content">
+        <section class="parallax-section">
+            <h1 class="brand-title">Echo Solutions</h1>
+            <p>Premium FiveM Software Solutions</p>
+            <a href="#products" class="btn scroll-link">Explore Our Products</a>
+        </section>
+        
+        <section id="about" class="section reduced-height">
+            <h2>About Us</h2>
+            <p>Echo Solutions specializes in developing high-quality software for FiveM. Our team of experienced developers creates custom scripts, plugins, and frameworks to enhance your experience.</p>
+            
+            <!-- Team members grid -->
+            <div class="team-container">
+                <div class="team-member">
+                    <div class="member-img-container">
+                        <img src="team1.jpg" alt="Team Member" class="member-img">
+                    </div>
+                    <h3>blokkaaa</h3>
+                    <p class="member-role">Founder & web Developer</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-img-container">
+                        <img src="team2.jpg" alt="Team Member" class="member-img">
+                    </div>
+                    <h3>oxlorenzox</h3>
+                    <p class="member-role">Co-Founder</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-img-container">
+                        <img src="team3.jpg" alt="Team Member" class="member-img">
+                    </div>
+                    <h3>ciabatta</h3>
+                    <p class="member-role">staff manager</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="products" class="parallax-section">
+            <h2>Our Products</h2>
+            <div class="app-interface-container">
+                <img src="app-interface.png" alt="Application Interface" class="app-interface">
+            </div>
+            <div class="products-container">
+                <!-- Product cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Features Section below products -->
+        <section id="features" class="section">
+            <div id="features-particles" class="section-particles"></div>
+            <h2>Features</h2>
+            <div class="features-container">
+                <div class="feature-column">
+                    <h3>Aim Assistance</h3>
+                    <ul class="feature-list">
+                        <li>Hotkey</li>
+                        <li>Aimbot</li>
+                        <li>Aim Targets</li>
+                        <li>Aim FOV</li>
+                        <li>Aim Settings</li>
+                        <li>Smoothing</li>
+                        <li>Silent Aim</li>
+                        <li>Silent Misc</li>
+                        <li>Aim Trigger</li>
+                        <li>Trigger Targets</li>
+                        <li>Trigger Misc</li>
+                        <li>Trigger Settings</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-column">
+                    <h3>Visualization</h3>
+                    <ul class="feature-list">
+                        <li>Hotkey</li>
+                        <li>Rendering</li>
+                        <li>Rendering Sizes</li>
+                        <li>Visual Misc</li>
+                        <li>Visual Distances</li>
+                        <li>Visual Style</li>
+                        <li>Visual Settings</li>
+                        <li>All Visuals Colors</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-column">
+                    <h3>Personal</h3>
+                    <ul class="feature-list">
+                        <li>Hotkey Godmode</li>
+                        <li>Player</li>
+                        <li>Player Misc</li>
+                        <li>Player Others</li>
+                        <li>Hotkey Repair</li>
+                        <li>Hotkey Unlock/Lock</li>
+                        <li>Hotkey Engine On/Off</li>
+                        <li>Vehicle</li>
+                        <li>Vehicle Misc</li>
+                        <li>Vehicle Others</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Echo Solutions. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.querySelector('.loading-screen');
+            const loadingBar = document.querySelector('.loading-bar');
+            const logoLetters = document.querySelectorAll('.loading-logo span');
+            
+            // Animate each letter one by one
+            let letterIndex = 0;
+            const letterInterval = setInterval(() => {
+                if (letterIndex < logoLetters.length) {
+                    logoLetters[letterIndex].classList.add('active');
+                    letterIndex++;
+                    
+                    // Update loading bar
+                    const progress = (letterIndex / logoLetters.length) * 50; // First 50% for letters
+                    loadingBar.style.width = `${progress}%`;
+                } else {
+                    clearInterval(letterInterval);
+                    
+                    // Complete the loading bar
+                    let barProgress = 50;
+                    const barInterval = setInterval(() => {
+                        barProgress += 2;
+                        loadingBar.style.width = `${barProgress}%`;
+                        
+                        if (barProgress >= 100) {
+                            clearInterval(barInterval);
+                            
+                            // Fade out loading screen
+                            setTimeout(() => {
+                                loadingScreen.classList.add('fade-out');
+                                
+                                // Remove loading screen after animation
+                                setTimeout(() => {
+                                    loadingScreen.style.display = 'none';
+                                    
+                                    // Initialize the main site
+                                    document.body.classList.add('loaded');
+                                }, 500);
+                            }, 300);
+                        }
+                    }, 30);
+                }
+            }, 400);
+        });
+    </script>
+</body>
+</html>

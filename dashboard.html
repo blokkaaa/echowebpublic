@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard - Echo Solutions</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        /* Loading screen styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: all 0.8s ease;
+            clip-path: circle(150% at 50% 100%);
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-logo {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 15px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .loading-logo span {
+            display: inline-block;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+        
+        .loading-logo span.active {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                         0 0 20px rgba(255, 255, 255, 0.6),
+                         0 0 30px rgba(255, 255, 255, 0.4);
+        }
+        
+        .loading-bar-container {
+            width: 200px;
+            height: 4px;
+            background-color: #333;
+            margin: 0 auto;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            width: 0;
+            background-color: #ffffff;
+            transition: width 0.5s ease;
+        }
+        
+        .loading-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+        
+        /* Stili per le notifiche */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background-color: #2ecc71;
+        }
+        
+        .notification.error {
+            background-color: #e74c3c;
+        }
+        
+        .notification.warning {
+            background-color: #f39c12;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+            padding: 0 5px;
+        }
+        
+        /* Stili per il tema chiaro */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        body.light-theme .dashboard-sidebar {
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .dashboard-nav-item {
+            color: #333;
+        }
+        
+        body.light-theme .dashboard-nav-item:hover,
+        body.light-theme .dashboard-nav-item.active {
+            background-color: #f0f0f0;
+        }
+        
+        body.light-theme .dashboard-section {
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .dashboard-card {
+            background-color: #f0f0f0;
+        }
+        
+        body.light-theme .header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .nav-link {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <span>E</span>
+                <span>C</span>
+                <span>H</span>
+                <span>O</span>
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="particles-js"></div>
+    
+    <!-- Header with logo and navigation -->
+    <header class="header">
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="logo.png" alt="Echo Solutions Logo" class="logo">
+            </a>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link home">Home</a>
+            <a href="dashboard.html" class="nav-link dashboard active">Dashboard</a>
+            <a href="https://discord.gg/ccEcPTJJ" target="_blank" class="nav-link discord">Discord</a>
+        </nav>
+    </header>
+    
+    <div class="dashboard-container">
+        <div class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img src="avatar-placeholder.png" alt="User Avatar">
+                </div>
+                <h3 class="user-name">Cliente</h3>
+                <p class="user-status">Premium</p>
+            </div>
+            <nav class="dashboard-nav">
+                <a href="#overview" class="dashboard-nav-item active" data-target="overview">
+                    <span class="icon">📊</span>
+                    <span>Panoramica</span>
+                </a>
+                <a href="#products" class="dashboard-nav-item" data-target="products">
+                    <span class="icon">🛒</span>
+                    <span>I Miei Prodotti</span>
+                </a>
+                <a href="#licenses" class="dashboard-nav-item" data-target="licenses">
+                    <span class="icon">🔑</span>
+                    <span>Licenze</span>
+                </a>
+                <a href="#downloads" class="dashboard-nav-item" data-target="downloads">
+                    <span class="icon">⬇️</span>
+                    <span>Download</span>
+                </a>
+                <a href="#support" class="dashboard-nav-item" data-target="support">
+                    <span class="icon">🔧</span>
+                    <span>Supporto</span>
+                </a>
+                <a href="#settings" class="dashboard-nav-item" data-target="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Impostazioni</span>
+                </a>
+            </nav>
+            <div class="logout-container">
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section active">
+                <h2>Panoramica</h2>
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="card-icon">🛒</div>
+                        <div class="card-content">
+                            <h3>Prodotti Attivi</h3>
+                            <p class="card-value">2</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon">🔑</div>
+                        <div class="card-content">
+                            <h3>Licenze</h3>
+                            <p class="card-value">3</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon">⏱️</div>
+                        <div class="card-content">
+                            <h3>Abbonamento</h3>
+                            <p class="card-value">Premium</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon">📅</div>
+                        <div class="card-content">
+                            <h3>Scadenza</h3>
+                            <p class="card-value">15/12/2023</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <h3>Attività Recenti</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">🔄</div>
+                            <div class="activity-content">
+                                <p class="activity-text">Aggiornamento Echo Cheat v2.5</p>
+                                <p class="activity-time">Oggi, 14:30</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">💰</div>
+                            <div class="activity-content">
+                                <p class="activity-text">Pagamento ricevuto per abbonamento Premium</p>
+                                <p class="activity-time">Ieri, 10:15</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">⬇️</div>
+                            <div class="activity-content">
+                                <p class="activity-text">Download Echo Cheat v2.4</p>
+                                <p class="activity-time">3 giorni fa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Products Section -->
+            <section id="products" class="dashboard-section">
+                <h2>I Miei Prodotti</h2>
+                <div class="products-list">
+                    <div class="product-item">
+                        <div class="product-image">
+                            <img src="product1.jpg" alt="Echo Cheat">
+                        </div>
+                        <div class="product-details">
+                            <h3>Echo Cheat</h3>
+                            <p class="product-description">Software premium per FiveM con funzionalità avanzate.</p>
+                            <div class="product-meta">
+                                <span class="product-status active">Attivo</span>
+                                <span class="product-version">v2.5</span>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Aggiorna</a>
+                            <a href="#" class="btn btn-secondary">Dettagli</a>
+                        </div>
+                    </div>
+                    
+                    <div class="product-item">
+                        <div class="product-image">
+                            <img src="product2.jpg" alt="Echo Utility">
+                        </div>
+                        <div class="product-details">
+                            <h3>Echo Utility</h3>
+                            <p class="product-description">Strumenti di utilità per migliorare l'esperienza di gioco.</p>
+                            <div class="product-meta">
+                                <span class="product-status active">Attivo</span>
+                                <span class="product-version">v1.8</span>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Aggiorna</a>
+                            <a href="#" class="btn btn-secondary">Dettagli</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Licenses Section -->
+            <section id="licenses" class="dashboard-section">
+                <h2>Licenze</h2>
+                <div class="licenses-list">
+                    <div class="license-item">
+                        <div class="license-header">
+                            <h3>Echo Cheat - Premium</h3>
+                            <span class="license-status active">Attiva</span>
+                        </div>
+                        <div class="license-details">
+                            <div class="license-detail">
+                                <span class="detail-label">Chiave:</span>
+                                <span class="detail-value">ECHO-XXXX-XXXX-XXXX</span>
+                            </div>
+                            <div class="license-detail">
+                                <span class="detail-label">Attivata il:</span>
+                                <span class="detail-value">01/10/2023</span>
+                            </div>
+                            <div class="license-detail">
+                                <span class="detail-label">Scade il:</span>
+                                <span class="detail-value">01/10/2024</span>
+                            </div>
+                            <div class="license-detail">
+                                <span class="detail-label">Dispositivi:</span>
+                                <span class="detail-value">1/2</span>
+                            </div>
+                        </div>
+                        <div class="license-actions">
+                            <a href="#" class="btn btn-primary">Rinnova</a>
+                            <a href="#" class="btn btn-secondary">Gestisci Dispositivi</a>
+                        </div>
+                    </div>
+                    
+                    <div class="license-item">
+                        <div class="license-header">
+                            <h3>Echo Utility - Standard</h3>
+                            <span class="license-status active">Attiva</span>
+                        </div>
+                        <div class="license-details">
+                            <div class="license-detail">
+                                <span class="detail-label">Chiave:</span>
+                                <span class="detail-value">ECHO-YYYY-YYYY-YYYY</span>
+                            </div>
+                            <div class="license-detail">
+                                <span class="detail-label">Attivata il:</span>
+                                <span class="detail-value">15/09/2023</span>
+                            </div>
+                            <div class="license-detail">
+                                <span class="detail-label">Scade il:</span>
+                                <span class="detail-value">15/12/2023</span>
+                            </div>
+                            <div class="license-detail">
+                                <span class="detail-label">Dispositivi:</span>
+                                <span class="detail-value">1/1</span>
+                            </div>
+                        </div>
+                        <div class="license-actions">
+                            <a href="#" class="btn btn-primary">Rinnova</a>
+                            <a href="#" class="btn btn-secondary">Gestisci Dispositivi</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Downloads Section -->
+            <section id="downloads" class="dashboard-section">
+                <h2>Download</h2>
+                <div class="downloads-list">
+                    <div class="download-item">
+                        <div class="download-icon">📦</div>
+                        <div class="download-details">
+                            <h3>Echo Cheat v2.5</h3>
+                            <p class="download-description">Ultima versione con correzioni di bug e nuove funzionalità.</p>
+                            <div class="download-meta">
+                                <span class="download-size">125 MB</span>
+                                <span class="download-date">Aggiornato: 10/11/2023</span>
+                            </div>
+                        </div>
+                        <div class="download-actions">
+                            <a href="#" class="btn btn-primary">Download</a>
+                            <a href="#" class="btn btn-secondary">Note di rilascio</a>
+                        </div>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="download-icon">📦</div>
+                        <div class="download-details">
+                            <h3>Echo Utility v1.8</h3>
+                            <p class="download-description">Strumenti di utilità aggiornati con nuove funzionalità.</p>
+                            <div class="download-meta">
+                                <span class="download-size">85 MB</span>
+                                <span class="download-date">Aggiornato: 05/11/2023</span>
+                            </div>
+                        </div>
+                        <div class="download-actions">
+                            <a href="#" class="btn btn-primary">Download</a>
+                            <a href="#" class="btn btn-secondary">Note di rilascio</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Support Section -->
+            <section id="support" class="dashboard-section">
+                <h2>Supporto</h2>
+                <div class="support-options">
+                    <div class="support-card">
+                        <div class="support-icon">💬</div>
+                        <h3>Chat dal vivo</h3>
+                        <p>Parla direttamente con un membro del nostro team di supporto.</p>
+                        <a href="#" class="btn btn-primary">Inizia Chat</a>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">📧</div>
+                        <h3>Email</h3>
+                        <p>Inviaci un'email e ti risponderemo entro 24 ore.</p>
+                        <a href="mailto:support@echosolutions.com" class="btn btn-primary">Invia Email</a>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">🎮</div>
+                        <h3>Discord</h3>
+                        <p>Unisciti al nostro server Discord per supporto dalla community.</p>
+                        <a href="https://discord.gg/ccEcPTJJ" target="_blank" class="btn btn-primary">Unisciti</a>
+                    </div>
+                </div>
+                
+                <div class="ticket-system">
+                    <h3>I Miei Ticket</h3>
+                    <div class="ticket-list">
+                        <div class="ticket-item">
+                            <div class="ticket-status open"></div>
+                            <div class="ticket-info">
+                                <h4>Problema con l'attivazione</h4>
+                                <p class="ticket-id">Ticket #1234</p>
+                                <p class="ticket-date">Aperto: 08/11/2023</p>
+                            </div>
+                            <div class="ticket-actions">
+                                <a href="#" class="btn btn-secondary">Visualizza</a>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-item">
+                            <div class="ticket-status closed"></div>
+                            <div class="ticket-info">
+                                <h4>Richiesta funzionalità</h4>
+                                <p class="ticket-id">Ticket #1201</p>
+                                <p class="ticket-date">Chiuso: 01/11/2023</p>
+                            </div>
+                            <div class="ticket-actions">
+                                <a href="#" class="btn btn-secondary">Visualizza</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="btn btn-primary create-ticket">Crea Nuovo Ticket</a>
+                </div>
+            </section>
+            
+            <!-- Settings Section -->
+            <section id="settings" class="dashboard-section">
+                <h2>Impostazioni</h2>
+                
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h3>Profilo</h3>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="username">Nome Utente</label>
+                                <input type="text" id="username" value="Cliente" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" value="cliente@example.com" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" value="********" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="avatar">Avatar</label>
+                                <div class="avatar-upload">
+                                    <img src="avatar-placeholder.png" alt="Avatar" class="avatar-preview">
+                                    <input type="file" id="avatar" class="avatar-input">
+                                    <label for="avatar" class="avatar-label">Cambia Avatar</label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h3>Notifiche</h3>
+                        <form class="settings-form">
+                            <div class="form-check">
+                                <input type="checkbox" id="email_updates" checked class="form-check-input">
+                                <label for="email_updates" class="form-check-label">Aggiornamenti via Email</label>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input type="checkbox" id="product_updates" checked class="form-check-input">
+                                <label for="product_updates" class="form-check-label">Aggiornamenti Prodotti</label>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input type="checkbox" id="newsletter" class="form-check-input">
+                                <label for="newsletter" class="form-check-label">Newsletter</label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Salva Preferenze</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h3>Preferenze</h3>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="language">Lingua</label>
+                                <select id="language" class="form-control">
+                                    <option value="it" selected>Italiano</option>
+                                    <option value="en">English</option>
+                                    <option value="es">Español</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="theme">Tema</label>
+                                <select id="theme" class="form-control">
+                                    <option value="dark" selected>Scuro</option>
+                                    <option value="light">Chiaro</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Salva Preferenze</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Echo Solutions. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.querySelector('.loading-screen');
+            const loadingBar = document.querySelector('.loading-bar');
+            const logoLetters = document.querySelectorAll('.loading-logo span');
+            
+            // Verifica Discord prima del caricamento della dashboard
+            checkDiscordRole();
+            
+            function checkDiscordRole() {
+                // Mostra un popup per l'autenticazione Discord
+                const discordAuth = confirm("Per accedere alla dashboard è necessario verificare il tuo ruolo su Discord. Vuoi procedere con l'autenticazione?");
+                
+                if (discordAuth) {
+                    // Reindirizza a Discord OAuth (in una situazione reale, questo dovrebbe puntare al tuo endpoint OAuth)
+                    // Per ora simuliamo il processo
+                    simulateDiscordAuth();
+                } else {
+                    // Se l'utente rifiuta, reindirizza alla home
+                    window.location.href = "index.html";
+                }
+            }
+            
+            function simulateDiscordAuth() {
+                // Simula la verifica del ruolo (in produzione, questo dovrebbe essere un vero controllo API)
+                loadingBar.style.width = "30%";
+                
+                // Mostra un messaggio di verifica in corso
+                const verifyMessage = document.createElement('p');
+                verifyMessage.textContent = "Verifica ruolo Discord in corso...";
+                verifyMessage.style.color = "#ffffff";
+                verifyMessage.style.marginTop = "20px";
+                document.querySelector('.loading-content').appendChild(verifyMessage);
+                
+                // Simula il tempo di risposta dell'API Discord
+                setTimeout(() => {
+                    // Simula una risposta positiva (in produzione, questo dipenderà dalla risposta API)
+                    const hasRole = true; // Cambia a false per testare il caso negativo
+                    
+                    if (hasRole) {
+                        verifyMessage.textContent = "Ruolo verificato! Caricamento dashboard...";
+                        // Continua con l'animazione di caricamento normale
+                        startLoadingAnimation();
+                    } else {
+                        verifyMessage.textContent = "Accesso negato. Non hai il ruolo richiesto.";
+                        verifyMessage.style.color = "#ff5555";
+                        
+                        // Aggiungi un pulsante per tornare alla home
+                        const backButton = document.createElement('button');
+                        backButton.textContent = "Torna alla Home";
+                        backButton.style.marginTop = "20px";
+                        backButton.style.padding = "10px 20px";
+                        backButton.style.background = "#333";
+                        backButton.style.color = "#fff";
+                        backButton.style.border = "none";
+                        backButton.style.borderRadius = "4px";
+                        backButton.style.cursor = "pointer";
+                        backButton.onclick = function() {
+                            window.location.href = "index.html";
+                        };
+                        document.querySelector('.loading-content').appendChild(backButton);
+                    }
+                }, 2000);
+            }
+            
+            function startLoadingAnimation() {
+                // Animate each letter one by one
+                let letterIndex = 0;
+                const letterInterval = setInterval(() => {
+                    if (letterIndex < logoLetters.length) {
+                        logoLetters[letterIndex].classList.add('active');
+                        letterIndex++;
+                        
+                        // Update loading bar
+                        const progress = 30 + (letterIndex / logoLetters.length) * 30; // From 30% to 60%
+                        loadingBar.style.width = `${progress}%`;
+                    } else {
+                        clearInterval(letterInterval);
+                        
+                        // Complete the loading bar
+                        let barProgress = 60;
+                        const barInterval = setInterval(() => {
+                            barProgress += 2;
+                            loadingBar.style.width = `${barProgress}%`;
+                            
+                            if (barProgress >= 100) {
+                                clearInterval(barInterval);
+                                
+                                // Fade out loading screen
+                                setTimeout(() => {
+                                    loadingScreen.classList.add('fade-out');
+                                    
+                                    // Remove loading screen after animation
+                                    setTimeout(() => {
+                                        loadingScreen.style.display = 'none';
+                                        
+                                        // Initialize the main site
+                                        document.body.classList.add('loaded');
+                                    }, 800); // Increased from 500ms to 800ms for the longer animation
+                                }, 300);
+                            }
+                        }, 30);
+                    }
+                }, 400);
+            }
+        });
+
+        // Dashboard navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.dashboard-nav-item');
+            const sections = document.querySelectorAll('.dashboard-section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav items
+                    navItems.forEach(navItem => navItem.classList.remove('active'));
+                    
+                    // Add active class to clicked nav item
+                    this.classList.add('active');
+                    
+                    // Get target section
+                    const targetId = this.getAttribute('data-target');
+                    
+                    // Hide all sections
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Show target section
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+            
+            // Gestione delle impostazioni
+            setupSettingsFunctionality();
+        });
+        
+        // Funzionalità per la sezione impostazioni
+        function setupSettingsFunctionality() {
+            // Gestione del profilo
+            const profileForm = document.querySelector('#settings .settings-group:nth-child(1) form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Ottieni i valori dal form
+                    const username = document.getElementById('username').value;
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    
+                    // Qui dovresti inviare i dati al server
+                    // Per ora, simuliamo un salvataggio riuscito
+                    showNotification('Profilo aggiornato con successo!', 'success');
+                    
+                    // Aggiorna il nome utente nella sidebar
+                    document.querySelector('.user-name').textContent = username;
+                });
+            }
+            
+            // Gestione dell'upload dell'avatar
+            const avatarInput = document.getElementById('avatar');
+            const avatarPreview = document.querySelector('.avatar-preview');
+            
+            if (avatarInput && avatarPreview) {
+                avatarInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            avatarPreview.src = e.target.result;
+                            
+                            // Aggiorna anche l'avatar nella sidebar
+                            document.querySelector('.user-avatar img').src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Gestione delle notifiche
+            const notificationsForm = document.querySelector('#settings .settings-group:nth-child(2) form');
+            if (notificationsForm) {
+                notificationsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Ottieni i valori dal form
+                    const emailUpdates = document.getElementById('email_updates').checked;
+                    const productUpdates = document.getElementById('product_updates').checked;
+                    const newsletter = document.getElementById('newsletter').checked;
+                    
+                    // Qui dovresti inviare i dati al server
+                    // Per ora, simuliamo un salvataggio riuscito
+                    showNotification('Preferenze di notifica aggiornate!', 'success');
+                });
+            }
+            
+            // Gestione delle preferenze
+            const preferencesForm = document.querySelector('#settings .settings-group:nth-child(3) form');
+            if (preferencesForm) {
+                preferencesForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Ottieni i valori dal form
+                    const language = document.getElementById('language').value;
+                    const theme = document.getElementById('theme').value;
+                    
+                    // Cambia il tema se necessario
+                    if (theme === 'light') {
+                        document.body.classList.add('light-theme');
+                    } else {
+                        document.body.classList.remove('light-theme');
+                    }
+                    
+                    // Qui dovresti inviare i dati al server
+                    // Per ora, simuliamo un salvataggio riuscito
+                    showNotification('Preferenze aggiornate!', 'success');
+                });
+            }
+            
+            // Aggiungi il selettore del tema per cambiare immediatamente
+            const themeSelector = document.getElementById('theme');
+            if (themeSelector) {
+                themeSelector.addEventListener('change', function() {
+                    if (this.value === 'light') {
+                        document.body.classList.add('light-theme');
+                    } else {
+                        document.body.classList.remove('light-theme');
+                    }
+                });
+            }
+        }
+        
+        // Funzione per mostrare notifiche
+        function showNotification(message, type = 'info') {
+            // Crea l'elemento di notifica
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <p>${message}</p>
+                </div>
+                <button class="notification-close">&times;</button>
+            `;
+            
+            // Aggiungi la notifica al DOM
+            document.body.appendChild(notification);
+            
+            // Mostra la notifica con animazione
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Aggiungi l'evento per chiudere la notifica
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            });
+            
+            // Rimuovi automaticamente la notifica dopo 5 secondi
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
